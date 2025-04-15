@@ -23,20 +23,6 @@ function App() {
     assignments: {} as Record<number, string>,
   });
 
-  useEffect(() => {
-    // AdSense 스크립트 동적 로드
-    const script = document.createElement('script');
-    script.src =
-      'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-
   const toggleAdmin = () => {
     setIsAdmin(!isAdmin);
     if (isConfigLocked) {
