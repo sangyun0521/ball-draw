@@ -50,7 +50,10 @@ const DrawingPhase: React.FC<DrawingPhaseProps> = ({ gameConfig, isAdmin }) => {
 
   const getRandomPosition = (index: number) => {
     const angle = (index / gameConfig.ballCount) * Math.PI * 2;
-    const radius = 150;
+    const containerWidth = window.innerWidth; // 화면 너비
+    const containerHeight = window.innerHeight; // 화면 높이
+    const radius = Math.min(containerWidth, containerHeight) / 3 - 50; // 반지름 계산 (화면 크기에 비례)
+  
     return {
       x: Math.cos(angle) * radius,
       y: Math.sin(angle) * radius,
@@ -64,9 +67,9 @@ const DrawingPhase: React.FC<DrawingPhaseProps> = ({ gameConfig, isAdmin }) => {
   };
 
   return (
-    <div className="relative min-h-[500px] flex flex-col items-center justify-center">
+    <div className="relative flex flex-col items-center justify-center overflow-hidden min-h-screen">
       {/* Drawing Area */}
-      <div className="relative w-full h-[400px] flex items-center justify-center">
+      <div className="relative w-full h-[400px] md:h-[500px] flex items-center justify-center overflow-hidden">
         <AnimatePresence>
           {balls.map((ball, index) => {
             const pos = getRandomPosition(index);

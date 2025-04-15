@@ -130,8 +130,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   const hasValidOutcomes = gameConfig.outcomes.length > 0 && gameConfig.outcomes.some(o => o.count > 0);
 
   return (
-    <div className="space-y-8">
-      <div className="bg-white/20 rounded-xl p-6 space-y-6">
+    <div className="space-y-8 px-4 md:px-6 lg:px-8"> {/* Add padding for responsiveness */}
+      <div className="bg-white/20 rounded-xl p-6 space-y-6 overflow-x-auto"> {/* Add overflow-x-auto */}
         <h2 className="text-2xl font-bold text-white mb-4">설정 단계 (Setup Phase)</h2>
         
         {/* Ball Count Control */}
@@ -163,38 +163,40 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             </span>
           </div>
           
-          {gameConfig.outcomes.map((outcome, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <input
-                type="text"
-                value={outcome.text}
-                onChange={(e) => handleOutcomeTextChange(index, e.target.value)}
-                className="flex-1 p-3 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/20"
-                placeholder={`Outcome ${index + 1}`}
-              />
-              <div className="flex items-center gap-2 bg-white/20 rounded-lg p-2">
+          <div className="space-y-3">
+            {gameConfig.outcomes.map((outcome, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <input
+                  type="text"
+                  value={outcome.text}
+                  onChange={(e) => handleOutcomeTextChange(index, e.target.value)}
+                  className="flex-1 p-3 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/20"
+                  placeholder={`Outcome ${index + 1}`}
+                />
+                <div className="flex items-center gap-2 bg-white/20 rounded-lg p-2">
+                  <button
+                    onClick={() => handleOutcomeCountChange(index, -1)}
+                    className="p-1 rounded-lg hover:bg-white/20 text-white transition"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="text-white w-8 text-center">{outcome.count}</span>
+                  <button
+                    onClick={() => handleOutcomeCountChange(index, 1)}
+                    className="p-1 rounded-lg hover:bg-white/20 text-white transition"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
                 <button
-                  onClick={() => handleOutcomeCountChange(index, -1)}
-                  className="p-1 rounded-lg hover:bg-white/20 text-white transition"
+                  onClick={() => removeOutcome(index)}
+                  className="p-2 rounded-lg hover:bg-white/20 text-white transition"
                 >
-                  <Minus className="h-4 w-4" />
-                </button>
-                <span className="text-white w-8 text-center">{outcome.count}</span>
-                <button
-                  onClick={() => handleOutcomeCountChange(index, 1)}
-                  className="p-1 rounded-lg hover:bg-white/20 text-white transition"
-                >
-                  <Plus className="h-4 w-4" />
+                  <Trash2 className="h-5 w-5" />
                 </button>
               </div>
-              <button
-                onClick={() => removeOutcome(index)}
-                className="p-2 rounded-lg hover:bg-white/20 text-white transition"
-              >
-                <Trash2 className="h-5 w-5" />
-              </button>
-            </div>
-          ))}
+            ))}
+          </div>
           
           <button
             onClick={addNewOutcome}
@@ -217,38 +219,40 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             </button>
             
             {showAssignments && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                {Array.from({ length: gameConfig.ballCount }, (_, i) => i + 1).map((ballNumber) => (
-                  <div key={ballNumber} className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
-                        {ballNumber}
+              <div className="overflow-x-auto"> {/* Add horizontal scroll */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                  {Array.from({ length: gameConfig.ballCount }, (_, i) => i + 1).map((ballNumber) => (
+                    <div key={ballNumber} className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
+                          {ballNumber}
+                        </div>
+                        <select
+                          value={gameConfig.assignments[ballNumber] || ''}
+                          onChange={(e) => handleAssignmentChange(ballNumber, e.target.value)}
+                          className="flex-1 p-2 rounded-lg bg-white/20 text-white border border-white/20"
+                        >
+                          <option value="">Select outcome</option>
+                          {gameConfig.outcomes.map((outcome, index) => {
+                            const assignedCount = getAssignedCount(outcome.text);
+                            const isCurrentSelection = gameConfig.assignments[ballNumber] === outcome.text;
+                            const isDisabled = assignedCount >= outcome.count && !isCurrentSelection;
+                            
+                            return (
+                              <option 
+                                key={index} 
+                                value={outcome.text}
+                                disabled={isDisabled}
+                              >
+                                {outcome.text} ({assignedCount}/{outcome.count})
+                              </option>
+                            );
+                          })}
+                        </select>
                       </div>
-                      <select
-                        value={gameConfig.assignments[ballNumber] || ''}
-                        onChange={(e) => handleAssignmentChange(ballNumber, e.target.value)}
-                        className="flex-1 p-2 rounded-lg bg-white/20 text-white border border-white/20"
-                      >
-                        <option value="">Select outcome</option>
-                        {gameConfig.outcomes.map((outcome, index) => {
-                          const assignedCount = getAssignedCount(outcome.text);
-                          const isCurrentSelection = gameConfig.assignments[ballNumber] === outcome.text;
-                          const isDisabled = assignedCount >= outcome.count && !isCurrentSelection;
-                          
-                          return (
-                            <option 
-                              key={index} 
-                              value={outcome.text}
-                              disabled={isDisabled}
-                            >
-                              {outcome.text} ({assignedCount}/{outcome.count})
-                            </option>
-                          );
-                        })}
-                      </select>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
 
