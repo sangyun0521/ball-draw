@@ -130,8 +130,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   const hasValidOutcomes = gameConfig.outcomes.length > 0 && gameConfig.outcomes.some(o => o.count > 0);
 
   return (
-    <div className="space-y-8 px-4 md:px-6 lg:px-8"> {/* Add padding for responsiveness */}
-      <div className="bg-white/20 rounded-xl p-6 space-y-6 overflow-x-auto"> {/* Add overflow-x-auto */}
+    <div className="space-y-8 px-2 md:px-4 lg:px-6 max-w-screen overflow-hidden mx-auto"> {/* Adjust padding and center */}
+      <div className="bg-white/20 rounded-xl p-4 md:p-6 space-y-6 overflow-x-auto"> {/* Adjust padding */}
         <h2 className="text-2xl font-bold text-white mb-4">설정 단계 (Setup Phase)</h2>
         
         {/* Ball Count Control */}

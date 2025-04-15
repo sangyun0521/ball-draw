@@ -67,7 +67,7 @@ const DrawingPhase: React.FC<DrawingPhaseProps> = ({ gameConfig, isAdmin }) => {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center overflow-hidden min-h-screen">
+    <div className="relative flex flex-col items-center justify-center overflow-hidden min-h-screen max-w-screen mx-auto px-2 md:px-4 lg:px-6">
       {/* Drawing Area */}
       <div className="relative w-full h-[400px] md:h-[500px] flex items-center justify-center overflow-hidden">
         <AnimatePresence>
